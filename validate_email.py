@@ -32,6 +32,7 @@ try:
     import DNS
     ServerError = DNS.ServerError
     DNS.DiscoverNameServers()
+    DNS.defaults['timeout'] = 2
 except (ImportError, AttributeError):
     DNS = None
 
