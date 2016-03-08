@@ -31,6 +31,7 @@ except NameError:
 try:
     import DNS
     ServerError = DNS.ServerError
+    TimeoutError = DNS.TimeoutError
     DNS.DiscoverNameServers()
     DNS.defaults['timeout'] = 2
 except (ImportError, AttributeError):
@@ -132,7 +133,11 @@ def validate_email(email, check_mx=False, verify=False, debug=False, smtp_timeou
                 raise Exception('For check the mx records or check if the email exists you must '
                                 'have installed pyDNS python package')
             hostname = email[email.find('@') + 1:]
-            mx_hosts = get_mx_ip(hostname)
+            try:
+                mx_hosts = get_mx_ip(hostname)
+            except TimeoutError:
+                # we have a timeout
+                return True
             if mx_hosts is None:
                 return False
             for mx in mx_hosts:
